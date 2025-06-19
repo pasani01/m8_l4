@@ -55,7 +55,8 @@ class UserData:
     def has_user(self, user_id):
         cursor = self.conn.cursor()
         cursor.execute('''
-            SELECT COUNT(*) FROM user_data WHERE id = ? AND isuser = ?
+            SELECT count(*) FROM user_data WHERE id = ? AND isuser = ?
         ''', (user_id, True))
         count = cursor.fetchone()[0]
+        print (f"User count: {count} and : {count > 0}")
         return count > 0

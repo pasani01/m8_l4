@@ -13,7 +13,7 @@ async def start_handler(message: Message,state:FSMContext):
     user_data = UserData()
     user_id = str(message.from_user.id)
 
-    if not user_data.has_joined(user_id):
+    if user_data.has_joined(user_id):
         await message.answer('Benim botuma hos geldiniz!')
         user_data.add_user(user_id)
     else:
@@ -24,12 +24,13 @@ async def start_handler(message: Message,state:FSMContext):
 async def regester_handler(message: Message, state: FSMContext):
     try:
         user_data = UserData()
-        if not user_data.has_user(str(message.from_user.id)):
+        print(user_data.has_user(str(message.from_user.id)))
+        if user_data.has_user(str(message.from_user.id)):
             await message.answer("Siz siz zatem bizim uyemiz siniz !")
-            return
-        await state.clear()
-        await state.set_state(RegesterStates.waiting_for_first_name)
-        await message.answer(f"regester basladi \nAdınızı daxil edin:")
+        else:
+            await state.clear()
+            await state.set_state(RegesterStates.waiting_for_first_name)
+            await message.answer(f"regester basladi \nAdınızı daxil edin:")
     except Exception as e:
         await message.answer(f"Bir hata oluştu !")
         print(e)
