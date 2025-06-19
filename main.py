@@ -2,8 +2,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 
 from config import *
-from handlers.my_start import *
-from handlers.regester import *
+from handlers.my_start import start_roter
+from handlers.regester import regester_router
+from handlers.katagory import catagory_roter
 from Ekler.custom_commands import my_commands
 
 
@@ -18,6 +19,7 @@ async def main():
     dp = Dispatcher()
 
     dp.include_routers(
+        catagory_roter,
         regester_router,
         start_roter,
     )

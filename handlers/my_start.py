@@ -4,7 +4,7 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from Ekler.user_data import UserData
-from Ekler.mt_states import RegesterStates
+from Ekler.mt_states import RegesterStates, CatagoryStates, ObjectStates
 
 start_roter = Router()
 
@@ -31,6 +31,23 @@ async def regester_handler(message: Message, state: FSMContext):
             await state.clear()
             await state.set_state(RegesterStates.waiting_for_first_name)
             await message.answer(f"regester basladi \nAdınızı daxil edin:")
+    except Exception as e:
+        await message.answer(f"Bir hata oluştu !")
+        print(e)
+        await state.clear()
+
+
+
+@start_roter.message(Command("addcatagory"))
+async def add_category_handler(message: Message, state: FSMContext):
+    try:
+        user_data = UserData()
+        if user_data.has_user(str(message.from_user.id)):
+            await state.clear()
+            await state.set_state(CatagoryStates.waiting_for_category_name)
+            await message.answer(f"Kategoriya əlavə etmək üçün adınızı daxil edin:")
+        else:
+            await message.answer("Öncə regester olun!")
     except Exception as e:
         await message.answer(f"Bir hata oluştu !")
         print(e)

@@ -12,14 +12,14 @@ class ObjectData:
         with self.conn:
             self.conn.execute('''
                 CREATE TABLE IF NOT EXISTS object_data (
-                    id TEXT UNIQUE,
+                    id INTEGER  PRIMARY KEY AUTOINCREMENT,
                     name TEXT,
                     description TEXT,
                     price REAL,
-                    category_id references category_data(id),
+                    category_id references category_data(id)
                 )
             ''')
-            
+
     def add_object(self, column, value):
         with self.conn:
             self.conn.execute(f'''
@@ -38,16 +38,15 @@ class CatagoryData:
         with self.conn:
             self.conn.execute('''
                 CREATE TABLE IF NOT EXISTS category_data (
-                    id TEXT UNIQUE,
+                    id INTEGER  PRIMARY KEY AUTOINCREMENT,
                     name TEXT,
                     description TEXT
                 )
             ''')
     
-    def add_category(self, column, value):
+    def add_category(self, columns, placeholders, values):
         with self.conn:
             self.conn.execute(f'''
-                INSERT OR IGNORE INTO category_data ({column})
-                VALUES (?)
-            ''', (value,))
-        
+                INSERT OR IGNORE INTO category_data ({columns})
+                VALUES ({placeholders})
+            ''', values)
