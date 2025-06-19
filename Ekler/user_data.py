@@ -17,6 +17,7 @@ class UserData:
                     username TEXT,
                     phhone TEXT,
                     location TEXT
+                    isuser BOOLEAN DEFAULT 0
                 )
             ''')
     def add_user(self, user_id):
@@ -34,10 +35,27 @@ class UserData:
         count = cursor.fetchone()[0]
         return count > 0
 
-    def create_user(self,column, values , user_id):
+    def create_user(self, data_dict, user_id):
+        columns = ', '.join(f"{col} = ?" for col in data_dict.keys())
+        values = list(data_dict.values())
+
         with self.conn:
             self.conn.execute(f'''
                 UPDATE user_data
-                SET {column} = ?
+                SET {columns}
                 WHERE id = ?
             ''', (*values, user_id))
+
+        with self.conn:
+            self.conn.execute('''
+                ALTER TABLE user_data Update SET isuser = ?
+                WHERE id = ?'''
+                , (True, user_id))
+    
+    def has_user(self, user_id):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            SELECT COUNT(*) FROM user_data WHERE id = ? AND isuser = ?
+        ''', (user_id, True))
+        count = cursor.fetchone()[0]
+        return count > 0

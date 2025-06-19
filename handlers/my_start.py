@@ -23,9 +23,14 @@ async def start_handler(message: Message,state:FSMContext):
 @start_roter.message(Command("regester"))
 async def regester_handler(message: Message, state: FSMContext):
     try:
+        user_data = UserData()
+        if not user_data.has_user(str(message.from_user.id)):
+            await message.answer("Siz siz zatem bizim uyemiz siniz !")
+            return
         await state.clear()
         await state.set_state(RegesterStates.waiting_for_first_name)
         await message.answer(f"regester basladi \nAdınızı daxil edin:")
     except Exception as e:
         await message.answer(f"Bir hata oluştu !")
+        print(e)
         await state.clear()

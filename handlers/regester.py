@@ -37,7 +37,7 @@ async def last_name_handler(message: Message, state: FSMContext):
 async def phone_handler(message: Message, state: FSMContext):
     try:
         contaxt = message.contact
-        await state.update_data(phone=contaxt.phone_number)
+        await state.update_data(phhone=contaxt.phone_number)
         await state.set_state(RegesterStates.waiting_for_location)
         await message.answer("Lütfen konumunuzu paylaşın:", reply_markup=request_location)
     except Exception as e:
@@ -52,20 +52,29 @@ async def phone_handler_eror(message: Message, state: FSMContext):
 @regester_router.message(RegesterStates.waiting_for_location, F.location)
 async def location_handler(message: Message, state: FSMContext):
     try:
-        data = UserData()
-        data.create_user(dict(user_data).keys(),dict(user_data).values(), message.from_user.id)
         location = message.location
-        await state.update_data(location=location)
+        location_str = f"{location.latitude}, {location.longitude}"
+        await state.update_data(location=location_str)
         await state.update_data(username=message.from_user.username)
         user_data = await state.get_data()
-        await message.answer(f"merhaba {user_data['first_name']} {user_data['last_name']},\n"
-                             f"aramiza hoş geldiniz!"
-                             )
-        
+        data = UserData()
+        data.create_user(user_data, str(message.from_user.id))
+
+        location = message.location
+        await state.update_data(location=location)
+
+        updated_data = await state.get_data()
+
+        await message.answer(
+            f"Merhaba {updated_data.get('first_name')} {updated_data.get('last_name')},\n"
+            f"aramıza hoş geldiniz!"
+        )
         await state.clear()
     except Exception as e:
         await message.answer("Bir hata oluştu!")
+        print(f"Error: {e}")
         await state.clear()
+
 
 @regester_router.message(RegesterStates.waiting_for_location)
 async def location_handler_error(message: Message, state: FSMContext):
