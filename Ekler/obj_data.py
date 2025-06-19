@@ -27,6 +27,13 @@ class ObjectData:
                 VALUES (?)
             ''', (value,))
 
+    def add_object(self, columns, placeholders, values):
+        with self.conn:
+            self.conn.execute(f'''
+                INSERT OR IGNORE INTO object_data ({columns})
+                VALUES ({placeholders})
+            ''', values)
+
 
 class CatagoryData:
     def __init__(self, db_path=BOT_DB):
@@ -50,3 +57,8 @@ class CatagoryData:
                 INSERT OR IGNORE INTO category_data ({columns})
                 VALUES ({placeholders})
             ''', values)
+    
+    def get_catagory(self):
+        with self.conn:
+            cursor = self.conn.execute('SELECT * FROM category_data')
+            return cursor.fetchall()

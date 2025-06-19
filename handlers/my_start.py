@@ -4,6 +4,7 @@ from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
 from Ekler.user_data import UserData
+from Ekler.obj_data import CatagoryData, ObjectData
 from Ekler.mt_states import RegesterStates, CatagoryStates, ObjectStates
 
 start_roter = Router()
@@ -46,6 +47,32 @@ async def add_category_handler(message: Message, state: FSMContext):
             await state.clear()
             await state.set_state(CatagoryStates.waiting_for_category_name)
             await message.answer(f"Kategoriya əlavə etmək üçün adınızı daxil edin:")
+        else:
+            await message.answer("Öncə regester olun!")
+    except Exception as e:
+        await message.answer(f"Bir hata oluştu !")
+        print(e)
+        await state.clear()
+
+@start_roter.message(Command("listcategory"))
+async def list_category_handler(message: Message):
+    try:
+        category_data = CatagoryData()
+        data= category_data.get_catagory()
+        categories = [item[1] for item in data]
+        await message.answer("Kategori listesi:\n" + "\n".join(categories))
+    except Exception as e:
+        await message.answer(f"Bir hata oluştu !")
+        print(e)
+
+@start_roter.message(Command("addobject"))
+async def add_object_handler(message: Message, state: FSMContext):
+    try:
+        user_data = UserData()
+        if user_data.has_user(str(message.from_user.id)):
+            await state.clear()
+            await state.set_state(ObjectStates.waiting_for_object_name)
+            await message.answer(f"objecin adini giriniz :")
         else:
             await message.answer("Öncə regester olun!")
     except Exception as e:

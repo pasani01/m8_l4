@@ -5,6 +5,7 @@ from config import *
 from handlers.my_start import start_roter
 from handlers.regester import regester_router
 from handlers.katagory import catagory_roter
+from handlers.objects import object_router
 from Ekler.custom_commands import my_commands
 
 
@@ -20,6 +21,7 @@ async def main():
 
     dp.include_routers(
         catagory_roter,
+        object_router,
         regester_router,
         start_roter,
     )

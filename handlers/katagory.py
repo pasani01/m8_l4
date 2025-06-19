@@ -46,3 +46,4 @@ async def add_category_description_handler(message: Message, state: FSMContext):
         await message.answer("Bir hata oluştu!")
         print(e)
         await state.clear()
+
