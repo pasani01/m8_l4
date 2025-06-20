@@ -19,12 +19,3 @@ request_location = ReplyKeyboardMarkup(
     one_time_keyboard=True
 
 )
-
-category_data = CatagoryData() 
-categories = category_data.get_catagory()
-
-select_category = InlineKeyboardMarkup(
-    inline_keyboard = [
-        [InlineKeyboardButton(text=item[1], callback_data=f"category:{item[0]}")] for item in categories
-    ]
-)

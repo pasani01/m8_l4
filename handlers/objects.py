@@ -2,10 +2,11 @@ from aiogram import Router
 from aiogram.types import Message,CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram import F
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from Ekler.obj_data import  ObjectData
+from Ekler.obj_data import  ObjectData,CatagoryData
 from Ekler.mt_states import ObjectStates
-from Ekler.keybord import select_category
+
 
 object_router = Router()
 
@@ -37,6 +38,13 @@ async def add_object_description_handler(message: Message, state: FSMContext):
 @object_router.message(ObjectStates.waiting_for_object_price )
 async def add_object_price_handler(message: Message, state: FSMContext):
     try:
+        category_data = CatagoryData() 
+        categories = category_data.get_catagory()
+        select_category = InlineKeyboardMarkup(
+        inline_keyboard = [
+                [InlineKeyboardButton(text=item[1], callback_data=f"category:{item[0]}")] for item in categories
+            ]
+        )
         price=message.text
         await state.update_data(price=price)
         await state.set_state(ObjectStates.waiting_for_object_category)
